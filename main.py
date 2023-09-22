@@ -1,4 +1,4 @@
-#Librerias necesarias 
+# Librerias necesarias 
 import pandas as pd
 from anytree import Node, RenderTree
 
@@ -61,7 +61,7 @@ class AVLTree:
         if balance < -1 and key < node.right.key:
             node.right = self.rotate_right(node.right)
             return self.rotate_left(node)
-
+        
         return node
     
     # Función para realizar una rotación a la izquierda en el Árbol AVL
@@ -129,7 +129,7 @@ class AVLTree:
         if balance < -1 and metric1 < node.right.key:
             node.right = self.rotate_right(node.right)
             return self.rotate_left(node)
-
+        
         return node
     
     # Función para convertir el Árbol AVL a una estructura de árbol general AnyTree
@@ -159,7 +159,6 @@ class AVLTree:
 
     # Función auxiliar para la eliminación de un nodo por métrica
     def _delete_node_by_metric(self, node, metric):
-
         if not node:
             return node
 
@@ -212,7 +211,6 @@ class AVLTree:
 
     # Función auxiliar para buscar un nodo por métrica
     def _search_node_by_metric(self, node, metric):
-        
         if not node:
             return None
 
@@ -222,7 +220,7 @@ class AVLTree:
             return self._search_node_by_metric(node.right, metric)
         else:
             return node.data
-        
+
     # Función para buscar nodos que cumplan con ciertos criterios
     def search_nodes_by_criteria(self, criteria):
         nodes_found = []
@@ -231,7 +229,6 @@ class AVLTree:
 
     # Función auxiliar para buscar nodos que cumplan con ciertos criterios
     def _search_nodes_by_criteria(self, node, criteria, result):
-        
         if not node:
             return
 
@@ -245,7 +242,6 @@ class AVLTree:
 
     # Función para verificar si un nodo cumple con ciertos criterios
     def _meets_criteria(self, data, criteria):
-
         if criteria['city'] and data['city'] != criteria['city']:
             return False
         if criteria['bedrooms'] and data['bedrooms'] < criteria['bedrooms']:
@@ -253,6 +249,167 @@ class AVLTree:
         if criteria['price'] and data['price'] > criteria['price']:
             return False
         return True
+
+    # Función para mostrar el menú adicional después de mostrar el recorrido por niveles
+    def show_menu_after_level_order(self):
+        while True:
+            print("\nMenú adicional:")
+            print("a. Obtener el nivel del nodo")
+            print("b. Obtener el factor de balanceo del nodo")
+            print("c. Encontrar el padre del nodo")
+            print("d. Encontrar el abuelo del nodo")
+            print("e. Encontrar el tío del nodo")
+            print("f. Volver al menú principal")
+
+            choice = input("Ingrese su elección: ")
+
+            if choice == "a":
+                metric_to_find = float(input("Ingrese la métrica1 del nodo para obtener su nivel: "))
+                level = self.get_node_level(metric_to_find)
+                if level is not None:
+                    print(f"Nivel del nodo con métrica {metric_to_find}: {level}")
+                else:
+                    print(f"Nodo con métrica {metric_to_find} no encontrado.")
+            elif choice == "b":
+                metric_to_find = float(input("Ingrese la métrica1 del nodo para obtener su factor de balanceo: "))
+                balance_factor = self.get_balance_factor_of_node(metric_to_find)
+                if balance_factor is not None:
+                    print(f"Factor de balanceo del nodo con métrica {metric_to_find}: {balance_factor}")
+                else:
+                    print(f"Nodo con métrica {metric_to_find} no encontrado.")
+            elif choice == "c":
+                metric_to_find = float(input("Ingrese la métrica1 del nodo para encontrar su padre: "))
+                parent_data = self.find_parent_of_node(metric_to_find)
+                if parent_data is not None:
+                    print(f"El padre del nodo con métrica {metric_to_find} es:")
+                    print(parent_data)
+                else:
+                    print(f"Nodo con métrica {metric_to_find} no encontrado.")
+            elif choice == "d":
+                metric_to_find = float(input("Ingrese la métrica1 del nodo para encontrar su abuelo: "))
+                grandparent_data = self.find_grandparent_of_node(metric_to_find)
+                if grandparent_data is not None:
+                    print(f"El abuelo del nodo con métrica {metric_to_find} es:")
+                    print(grandparent_data)
+                else:
+                    print(f"Nodo con métrica {metric_to_find} no encontrado.")
+            elif choice == "e":
+                metric_to_find = float(input("Ingrese la métrica1 del nodo para encontrar su tío: "))
+                uncle_data = self.find_uncle_of_node(metric_to_find)
+                if uncle_data is not None:
+                    print(f"El tío del nodo con métrica {metric_to_find} es:")
+                    print(uncle_data)
+                else:
+                    print(f"Nodo con métrica {metric_to_find} no encontrado.")
+            elif choice == "f":
+                break
+            else:
+                print("Opción no válida. Intente de nuevo.")
+
+    # Función para obtener el nivel de un nodo dado su métrica1
+    def get_node_level(self, metric):
+        return self._get_node_level(self.root, metric, level=1)
+
+    # Función auxiliar para obtener el nivel de un nodo
+    def _get_node_level(self, node, metric, level):
+        if not node:
+            return None
+
+        if metric == node.key:
+            return level
+        elif metric < node.key:
+            return self._get_node_level(node.left, metric, level + 1)
+        else:
+            return self._get_node_level(node.right, metric, level + 1)
+
+    # Función para obtener el factor de balanceo de un nodo dado su métrica1
+    def get_balance_factor_of_node(self, metric):
+        return self._get_balance_factor_of_node(self.root, metric)
+
+    # Función auxiliar para obtener el factor de balanceo de un nodo
+    def _get_balance_factor_of_node(self, node, metric):
+        if not node:
+            return None
+
+        if metric == node.key:
+            return get_balance_factor(node)
+        elif metric < node.key:
+            return self._get_balance_factor_of_node(node.left, metric)
+        else:
+            return self._get_balance_factor_of_node(node.right, metric)
+
+    # Función para encontrar el padre de un nodo dado su métrica1
+    def find_parent_of_node(self, metric):
+        return self._find_parent_of_node(self.root, metric)
+
+    # Función auxiliar para encontrar el padre de un nodo
+    def _find_parent_of_node(self, node, metric):
+        if not node:
+            return None
+
+        if (node.left and node.left.key == metric) or (node.right and node.right.key == metric):
+            return node.data
+
+        if metric < node.key:
+            return self._find_parent_of_node(node.left, metric)
+        else:
+            return self._find_parent_of_node(node.right, metric)
+
+    # Función para encontrar el abuelo de un nodo dado su métrica1
+    def find_grandparent_of_node(self, metric):
+        return self._find_grandparent_of_node(self.root, metric)
+
+    # Función auxiliar para encontrar el abuelo de un nodo
+    def _find_grandparent_of_node(self, node, metric):
+        if not node:
+            return None
+
+        if (node.left and node.left.key == metric) or (node.right and node.right.key == metric):
+            parent_metric = node.key
+            return self.find_parent_of_node(parent_metric)
+
+        if metric < node.key:
+            return self._find_grandparent_of_node(node.left, metric)
+        else:
+            return self._find_grandparent_of_node(node.right, metric)
+
+    # Función para encontrar el tío de un nodo dado su métrica1
+    def find_uncle_of_node(self, metric):
+        return self._find_uncle_of_node(self.root, metric)
+
+    # Función auxiliar para encontrar el tío de un nodo
+    def _find_uncle_of_node(self, node, metric):
+        if not node:
+            return None
+
+        parent_data = self.find_parent_of_node(metric)
+        if parent_data:
+            parent_metric = parent_data['price'] / parent_data['surface_total']
+            return self.find_sibling_of_node(parent_metric)
+
+        return None
+
+    # Función para encontrar el hermano de un nodo dado su métrica1
+    def find_sibling_of_node(self, metric):
+        return self._find_sibling_of_node(self.root, metric)
+
+    # Función auxiliar para encontrar el hermano de un nodo
+    def _find_sibling_of_node(self, node, metric):
+        if not node:
+            return None
+
+        if metric == node.key:
+            parent_data = self.find_parent_of_node(metric)
+            if parent_data:
+                parent_metric = parent_data['price'] / parent_data['surface_total']
+                if node.key < parent_metric:
+                    return parent_data['price'] / parent_data['surface_total']
+                else:
+                    return self.find_sibling_of_node(parent_metric)
+        elif metric < node.key:
+            return self._find_sibling_of_node(node.left, metric)
+        else:
+            return self._find_sibling_of_node(node.right, metric)
 
 # Se carga el dataset desde el archivo CSV
 df = pd.read_csv('co_properties_final.csv')
@@ -264,9 +421,7 @@ avl_tree = AVLTree()
 for index, row in df.iterrows():
     avl_tree.insert_property(row.to_dict())
 
-# Se imprime el árbol AVL en forma de árbol
-avl_tree.print_tree()
-
+# Menú principal
 while True:
     print("Menú:")
     print("1. Insertar un nodo")
@@ -306,49 +461,44 @@ while True:
         avl_tree.print_tree()
 
     elif choice == "3":
-        # Se solicitan la métrica por la cual desea buscar el nodo
+        # Se solicita la métrica por la cual desea buscar el nodo
         metric_to_find = float(input("Ingrese la métrica1 del nodo que desea buscar: "))
 
-        # Se implementa la lógica para buscar y mostrar el nodo si se encuentra
+        # Se busca el nodo y se muestra su información si se encuentra
         node_data = avl_tree.search_node_by_metric(metric_to_find)
-        if node_data:
-            print("Nodo encontrado:")
-            print(node_data)
+        if node_data is not None:
+            print(f"Nodo encontrado:\n{node_data}")
         else:
-            print("Nodo no encontrado")
+            print(f"Nodo con métrica {metric_to_find} no encontrado.")
 
     elif choice == "4":
-        # Se solicitan los criterios al usuario (por ejemplo, ciudad, dormitorios, precio)
-        city_criteria = input("Ingrese la ciudad (deje en blanco si no es un criterio): ")
-        bedrooms_criteria = int(input("Ingrese el número de dormitorios (deje 0 si no es un criterio): "))
-        price_criteria = float(input("Ingrese el precio máximo (deje 0 si no es un criterio): "))
-
-        # Se definen los criterios en un diccionario
-        search_criteria = {
-            'city': city_criteria,
-            'bedrooms': bedrooms_criteria,
-            'price': price_criteria,
-            'min_metric': 0,  # Puedes ajustar estos valores según tu lógica
-            'max_metric': float('inf')  # Puedes ajustar estos valores según tu lógica
+        # Se solicitan los criterios de búsqueda al usuario
+        criteria = {
+            'city': input("Ingrese la ciudad (deje en blanco para cualquier ciudad): "),
+            'bedrooms': int(input("Ingrese el número mínimo de dormitorios (deje en blanco para cualquier número): ") or 0),
+            'price': float(input("Ingrese el precio máximo (deje en blanco para cualquier precio): ") or float('inf')),
+            'min_metric': float(input("Ingrese el valor mínimo de la métrica1 (deje en blanco para cualquier valor): ") or float('-inf')),
+            'max_metric': float(input("Ingrese el valor máximo de la métrica1 (deje en blanco para cualquier valor): ") or float('inf'))
         }
 
-        # Se buscan nodos que cumplan con los criterios
-        nodes_found = avl_tree.search_nodes_by_criteria(search_criteria)
-
-        # Se muestran los nodos encontrados
+        # Se buscan los nodos que cumplan con los criterios y se muestran
+        nodes_found = avl_tree.search_nodes_by_criteria(criteria)
         if nodes_found:
             print("Nodos encontrados:")
             for node_data in nodes_found:
                 print(node_data)
         else:
-            print("Ningún nodo encontrado")
+            print("No se encontraron nodos que cumplan con los criterios.")
 
     elif choice == "5":
-        # Se muestra el recorrido por niveles del árbol AVL
+        # Se muestra el árbol AVL en forma de árbol
         avl_tree.print_tree()
+        # Se muestra el menú adicional
+        avl_tree.show_menu_after_level_order()
 
     elif choice == "6":
-        # Se sale del programa
         break
+
     else:
         print("Opción no válida. Intente de nuevo.")
+
